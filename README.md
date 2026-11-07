@@ -80,6 +80,22 @@ The input XAPK must contain a base APK with SHA-256
 
 Uninstall the original app first (different signature), then install the XAPK with an XAPK installer.
 
+### Creators' App 3.6.0 (Windows, experimental)
+
+`patcher/3.6/` holds the same patches (P1–P9) re-anchored for 3.6.0, and `patcher/build-3.6.ps1`
+builds, aligns and signs a split bundle from an APKMirror `.apkm` (base SHA-256
+`0ccd19a3d391218650d6013cf2b04e5b8e8644438f83a52e8d55302553708777`). Requirements: JDK, Python 3,
+[apktool](https://apktool.org) 3.0.3 and Android build-tools 35.0.0.
+
+```powershell
+powershell -ExecutionPolicy Bypass -File patcher\build-3.6.ps1 -Apkm "<file>.apkm" -Apktool C:\path\apktool.jar -Out out
+adb install-multiple -r (Get-ChildItem out\apks_3.6.0_release\*.apk).FullName
+```
+
+Only the release variant is ported; the debug patches (D1–D3) are untouched. Tested on one device over
+Wi-Fi (Smartphone Connect): connection, live view and still capture work. USB and Import are untested.
+The 3.5.0 patcher above is unchanged.
+
 ## Use
 
 On first launch, choose **Hong Kong** as the region: with mainland China the app requires a Creators' Cloud sign-in
