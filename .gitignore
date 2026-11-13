@@ -1,16 +1,42 @@
-# Never commit Sony binaries or build outputs
+# Original Sony packages and generated Android binaries
 *.apk
+*.apkm
 *.xapk
 *.apks
+*.aab
+*.idsig
+*.aligned
+*:Zone.Identifier
+inputs/
 out/
-# Signing material
+build/
+
+# Downloaded tools / SDKs (keep these local)
+*.jar
+android-sdk/
+
+# Signing material: retain locally for updates, never publish
 *.jks
 *.keystore
 *.pass
-# Logs may contain device identifiers
+*.pem
+*.key
+
+# Logs can include camera / device identifiers
 logs/
 *.log
-.DS_Store
+
+# Python and editor caches
 __pycache__/
-# Local tool state
+*.py[cod]
+.venv/
+.pytest_cache/
+.DS_Store
+.vscode/
+.idea/
+
+# Local agent / account state
 .claude/
+.codex/
+.agents/
+.aws/

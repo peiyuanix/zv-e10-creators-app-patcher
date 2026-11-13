@@ -108,7 +108,7 @@ for variant in $VARIANTS; do
   step "Building $variant"
   rm -rf "$WORK/$variant"
   cp -R "$WORK/decoded" "$WORK/$variant"
-  python3 "$SCRIPT_DIR/zvpatch.py" "$WORK/$variant" "$variant"
+  python3 "$SCRIPT_DIR/3.5/zvpatch.py" "$WORK/$variant" "$variant"
 
   apktool b -o "$WORK/$variant-unsigned.apk" "$WORK/$variant" >/dev/null
   stage=$WORK/$variant-stage

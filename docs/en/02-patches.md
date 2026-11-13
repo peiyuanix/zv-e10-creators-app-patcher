@@ -1,7 +1,7 @@
 # 2. Problems and patches
 
 All patches target app 3.5.0 decoded with `apktool d -r`. The implementation is
-[`patcher/zvpatch.py`](../../patcher/zvpatch.py); each patch finds its target by class descriptor and aborts if its
+[`patcher/zvpatch.py`](../../patcher/3.5/zvpatch.py); each patch finds its target by class descriptor and aborts if its
 anchor does not match exactly once. Logs come from the debug build ([D1–D3](#debug-build-only)), shortened.
 
 P1–P6 are about the USB connection, P7–P9 about Wi-Fi and the transfer paths. Two of them add a small helper class,

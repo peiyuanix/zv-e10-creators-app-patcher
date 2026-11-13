@@ -1,5 +1,8 @@
 # 4. Status and limitations
 
+> 3.6.0 / 3.6.1 build status and limitations: [build guide](05-building.md). The device results below are for 3.5.0.
+
+
 Tested with app 3.5.0 (region: Hong Kong), ZV-E10 firmware 2.03, Android 16 (OnePlus, ColorOS).
 
 ## Works

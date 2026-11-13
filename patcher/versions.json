@@ -1,0 +1,10 @@
+{
+  "3.6.0": {
+    "patcher": "3.6/zvpatch.py",
+    "base_sha256": "0ccd19a3d391218650d6013cf2b04e5b8e8644438f83a52e8d55302553708777"
+  },
+  "3.6.1": {
+    "patcher": "3.6/zvpatch.py",
+    "base_sha256": "71989a7ce1a1da0bb3072f516ce0f27ff3d6ac54e9e7a63afdf3a2cb39d9833f"
+  }
+}
