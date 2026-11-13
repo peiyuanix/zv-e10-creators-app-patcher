@@ -1,6 +1,6 @@
 # ZV-E10 × Creators' App
 
-Patches for Sony's **Creators' App** for Android (3.5.0) that add support for the original **ZV-E10** over USB and
+Patches for Sony's **Creators' App** for Android (3.5.0, 3.6.0 and 3.6.1) that add support for the original **ZV-E10** over USB and
 Wi-Fi: live view and remote control, still and movie shooting, automatic copy of captured photos, transfer of images
 sent from the camera, and browsing the memory card from the phone.
 
@@ -60,6 +60,7 @@ Details: [problems and patches](docs/en/02-patches.md).
 2. [Problems and patches](docs/en/02-patches.md)
 3. [Debugging workflow](docs/en/03-debugging.md)
 4. [Status and limitations](docs/en/04-status.md)
+5. [Building and repository layout](docs/en/05-building.md)
 
 ## Patching (macOS)
 
@@ -80,21 +81,42 @@ The input XAPK must contain a base APK with SHA-256
 
 Uninstall the original app first (different signature), then install the XAPK with an XAPK installer.
 
-### Creators' App 3.6.0 (Windows, experimental)
+### Creators' App 3.6.0 / 3.6.1: single arm64 APK
 
-`patcher/3.6/` holds the same patches (P1–P9) re-anchored for 3.6.0, and `patcher/build-3.6.ps1`
-builds, aligns and signs a split bundle from an APKMirror `.apkm` (base SHA-256
-`0ccd19a3d391218650d6013cf2b04e5b8e8644438f83a52e8d55302553708777`). Requirements: JDK, Python 3,
-[apktool](https://apktool.org) 3.0.3 and Android build-tools 35.0.0.
+The recommended build produces a signed **arm64-v8a-only APK**. It keeps all language and screen-density
+resources, excludes the other CPU architectures, and reuses your local signing key. Requirements:
+Python 3.11+, JDK, apktool 3.0.3, Android build-tools 35.0.0, and APKEditor 1.4.9 (download separately).
 
-```powershell
-powershell -ExecutionPolicy Bypass -File patcher\build-3.6.ps1 -Apkm "<file>.apkm" -Apktool C:\path\apktool.jar -Out out
-adb install-multiple -r (Get-ChildItem out\apks_3.6.0_release\*.apk).FullName
+```bash
+python3 tools/build.py "3.6.1.apkm" \
+  --build-tools out/android-sdk/build-tools/35.0.0 \
+  --apkeditor out/APKEditor-1.4.9.jar
 ```
 
-Only the release variant is ported; the debug patches (D1–D3) are untouched. Tested on one device over
-Wi-Fi (Smartphone Connect): connection, live view and still capture work. USB and Import are untested.
-The 3.5.0 patcher above is unchanged.
+On Windows use `python` and add `--apktool-jar C:\path\apktool.jar` if apktool is not on PATH.
+The same command accepts the documented 3.6.0 APKM. The version and base SHA-256 must match
+[`patcher/versions.json`](patcher/versions.json); unsupported inputs are rejected before patching.
+P1–P9 anchors must all match. Debug patches D1–D3 are not ported for 3.6.x.
+
+Output for 3.6.1:
+
+- `out/CreatorsApp_3.6.1_ZV-E10_release-arm64-v8a.apk` (about 135.5 MiB).
+- Adjacent `.apk.sha256` and `.build.json` files record the checksum and build verification.
+- `out/zvpatch-signing.jks` and `.pass` are reused or created together. Back up both privately.
+
+Existing output APKs are never overwritten; choose another `--out` directory and specify the existing
+`--keystore` and `--password-file` to retain the signing identity. Install the APK directly, or use
+`adb install -r <output.apk>`. Uninstall the official app first if its signature conflicts.
+Android 13+ and an arm64-v8a device are required.
+
+3.6.1 was built successfully with P1–P9, unchanged patched DEX after merging, arm64-only libraries,
+v2/v3 signatures, ZIP integrity and 16 KiB ZIP alignment checks. **No 3.6.1 device/camera testing has
+been performed.** ZIP alignment alone does not establish native-library compatibility with 16 KiB pages.
+For 3.6.0, the upstream report covers Wi-Fi Smartphone Connect, live view and still capture on one
+device; USB and Import remain untested. See [build instructions](docs/en/05-building.md).
+
+The legacy Windows `patcher/build-3.6.ps1` builds a full-architecture split XAPK; use `tools/build.py`
+for the arm64-only single APK requested here. The macOS 3.5.0 workflow above remains available.
 
 ## Use
 

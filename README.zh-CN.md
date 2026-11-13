@@ -1,6 +1,6 @@
 # ZV-E10 × Creators' App
 
-为索尼 **Creators' App** 安卓版（3.5.0）提供补丁，使其支持初代 **ZV-E10**，USB 和 Wi-Fi 连接均可：实时画面与遥控操作、拍照与录像、拍摄的照片自动传输到手机、接收相机发送的影像、在手机上浏览存储卡并导入。
+为索尼 **Creators' App** 安卓版（3.5.0、3.6.0 和 3.6.1）提供补丁，使其支持初代 **ZV-E10**，USB 和 Wi-Fi 连接均可：实时画面与遥控操作、拍照与录像、拍摄的照片自动传输到手机、接收相机发送的影像、在手机上浏览存储卡并导入。
 
 [English](README.md)
 
@@ -46,8 +46,41 @@ Creators' App 的支持机型列表里有 ZV-E10 II，没有初代 ZV-E10，下�
 2. [问题与补丁](docs/zh-CN/02-patches.md)
 3. [调试方法](docs/zh-CN/03-debugging.md)
 4. [现状与限制](docs/zh-CN/04-status.md)
+5. [构建与项目结构](docs/zh-CN/05-building.md)
 
-## 打补丁（macOS）
+## 打补丁（3.6.0 / 3.6.1，推荐）
+
+新构建入口默认只生成 **arm64-v8a 单 APK**，保留全部语言与屏幕密度资源，复用本地签名密钥。
+依赖 Python 3.11+、JDK、apktool 3.0.3、Android build-tools 35.0.0 和 APKEditor 1.4.9；工具需自行下载。
+
+```bash
+python3 tools/build.py "3.6.1.apkm" \
+  --build-tools out/android-sdk/build-tools/35.0.0 \
+  --apkeditor out/APKEditor-1.4.9.jar
+```
+
+Windows 可用 `python`，未配置 apktool 命令时添加 `--apktool-jar C:\path\apktool.jar`。
+同一命令支持仓库版本表中的 3.6.0 APKM。脚本会检查包名、版本、基础包 SHA-256，以及全部 P1–P9 锚点；
+不接受未知输入。3.6.x 仅支持 release，D1–D3 调试补丁尚未适配。
+
+3.6.1 输出：
+
+- `out/CreatorsApp_3.6.1_ZV-E10_release-arm64-v8a.apk`，约 135.5 MiB，可直接安装。
+- 相邻 `.apk.sha256` 与 `.build.json`：校验和及构建验证记录。
+- `out/zvpatch-signing.jks` / `.pass`：复用或新建的签名文件，请私下备份两者。
+
+脚本拒绝覆盖现有 APK。另选 `--out` 时，可用 `--keystore` 和 `--password-file` 指向原密钥，保持签名一致。
+要求 Android 13+、arm64-v8a 手机；签名冲突时先卸载官方版。首次启动地区选“中国香港”。
+
+**3.6.1 已通过构建验证，尚未真机测试。** 验证包含 P1–P9、合并后补丁 DEX 不变、仅 arm64 原生库、
+v2/v3 签名、ZIP 完整性及 16 KiB ZIP 对齐。ZIP 对齐不代表原生库已验证兼容 16 KiB 内存页。
+3.6.0 上游仅报告一台设备的 Wi-Fi 智能手机连接、实时画面和拍照可用，USB、Import 未测试。
+详细步骤与目录说明见[构建说明](docs/zh-CN/05-building.md)。
+
+旧 `patcher/build-3.6.ps1` 保留为 Windows 全架构分包 XAPK 流程；arm64 单 APK 请使用新入口。
+
+## 打补丁（3.5.0，macOS 旧流程）
+
 
 ```bash
 brew install openjdk apktool
